@@ -1,0 +1,27 @@
+---
+# tasks file for wordpress
+
+- name: Install dos2unix package
+  apt:
+    name: dos2unix
+    state: present
+    update_cache: yes
+
+
+- import_tasks: install_mariadb.yml
+  when: vm_type == "db"
+
+- import_tasks: install_apache.yml
+  when: vm_type  == "webserver"
+
+- import_tasks: install_php.yml
+  when: vm_type == "webserver"
+
+- import_tasks: deploy_site.yml
+  when: vm_type = "webserver"
+
+- import_tasks: install_zabbix.yml
+  when: vm_type = "monitoring"
+
+
+

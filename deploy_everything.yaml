@@ -1,0 +1,8 @@
+- hosts: all
+  gather_facts: no
+
+  roles:
+    - { role: deploy_project }
+
+- name: Import playbook configure_monitoring.yaml
+  import_playbook: configure_monitoring.yaml

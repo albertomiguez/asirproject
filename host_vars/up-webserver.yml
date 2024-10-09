@@ -1,0 +1,5 @@
+vm_name: up-webserver
+vm_ip: set_your_ip
+vm_type: web
+
+
