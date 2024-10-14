@@ -1,1 +1,13 @@
+---
 
+- name: Instalar el repositorio de Zabbix
+  apt:
+    name: zabbix-server-mysql
+    state: present
+    update-cache: yes
+    
+- name: Iniciar y habilitar Zabbix
+  service:
+    name: zabbix-server
+    state: started
+    enabled: yes

@@ -1,5 +1,5 @@
 vm_name: up-db
-vm_ip: set_your_ip
+vm_ip: 5.22.218.74
 vm_type: db
 
 

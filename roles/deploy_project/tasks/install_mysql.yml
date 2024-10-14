@@ -1,0 +1,13 @@
+---
+
+- name: Instalar MySQL
+  apt:
+    name: mysql-server
+    state: present
+    update-cache: yes
+
+- name: Iniciar y habilitar MySQL
+  service:
+    name: mysql
+    state: started
+    enabled: yes

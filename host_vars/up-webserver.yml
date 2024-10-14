@@ -1,5 +1,5 @@
 vm_name: up-webserver
-vm_ip: set_your_ip
+vm_ip: 194.62.97.223
 vm_type: web
 
 

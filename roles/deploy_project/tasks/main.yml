@@ -8,7 +8,7 @@
     update_cache: yes
 
 
-- import_tasks: install_mariadb.yml
+- import_tasks: install_mysql.yml
   when: vm_type == "db"
 
 - import_tasks: install_apache.yml
