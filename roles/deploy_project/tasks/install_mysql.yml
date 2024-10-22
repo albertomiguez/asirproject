@@ -2,12 +2,40 @@
 
 - name: Instalar MySQL
   apt:
-    name: mysql-server
+    name: default-mysql-server
     state: present
     update-cache: yes
+  tags: 
+    - install_zabbix
 
 - name: Iniciar y habilitar MySQL
   service:
     name: mysql
     state: started
     enabled: yes
+  tags:
+    - install_zabbix
+
+- name: Comprobar estado de MySQL
+  shell: systemctl status mysql
+  register: mysql_status
+  changed_when: False
+
+- name: Cambiar dirección IP en la que escucha MySQL
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 10.90.1.%'
+    state: present
+  notify:
+    - Restart MySQL
+
+- name: Instalar módulo de python
+  apt:
+    name: python3-mysqldb
+    state: present
+    update-cache: yes
+
+- name: Mostrar estado de MySQL
+  debug:
+    var: mysql_status.stdout

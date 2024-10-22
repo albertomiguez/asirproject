@@ -1,17 +1,32 @@
 ---
 # handlers file for Wordpress
 
-- name: Restart apache2
+- name: Restart Apache
   systemd:
     name: apache2
     state: restarted
 
-- name: Start apache2
+- name: Start Apache
   systemd:
     name: apache2
     state: started
 
-- name: Stop apache2
+- name: Stop Apache
   systemd:
     name: apache2
+    state: stopped
+
+- name: Restart MySQL
+  systemd:
+    name: mysql
+    state: restarted
+
+- name: Start MySQL
+  systemd:
+    name: mysql
+    state: started
+
+- name: Stop MySQL
+  systemd:
+    name: mysql
     state: stopped

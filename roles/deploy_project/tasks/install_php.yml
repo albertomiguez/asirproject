@@ -2,27 +2,26 @@
 
 - name: Instalar PHP
   apt:
-    name: php
-    state: present
-    update_cache: yes
-
-- name: Instalar módulos de PHP
-  apt:
     name: "{{ item }}"
     state: present
-  loop: 
-    - php-cli
+    update_cache: yes
+  loop:
+    - php
     - php-mysql
+    - libapache2-mod-php
+    - php-cli
     - php-fpm
-    - php-json
-    - php-curl
-    - php-mbstring
-    - php-xml
-    - php-zip
-  update-chache: yes
 
 - name: Verificar que PHP-FPM esté activo
   service:
     name: php7.4-fpm
     state: started
     enabled: yes
+
+- name: Verificar versión de PHP
+  shell: php -v
+  register: php_version
+
+- name: Mostrar versión de PHP
+  debug:
+    var: php_version.stdout

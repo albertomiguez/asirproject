@@ -11,3 +11,12 @@
     name: zabbix-server
     state: started
     enabled: yes
+
+- name: Verificar estado de Zabbix
+  shell: systemctl status zabbix-server
+  register: zabbix_status
+  changed_when: False
+
+- name: Mostrar estado de Zabbix
+  debug:
+    var: zabbix_status.stdout

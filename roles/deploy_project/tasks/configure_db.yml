@@ -1,0 +1,47 @@
+---
+
+- name: Crear la base de datos para WordPress
+  mysql_db:
+    name: wordpress_db
+    state: present
+    collation: utf8_general_ci
+    encoding: utf8
+    login_user: root
+  when: vm_type == "db"
+  tags:
+    - configure_mysql
+
+- name: Crear un usuario para la base de datos
+  mysql_user:
+    name: wordpress
+    password: 'Abc123..'
+    host: '10.90.1.%'
+    priv: "wordpress_db.*:ALL"
+    state: present
+    login_user: root
+  when: vm_type == "db"
+  tags:
+    - configure_mysql
+
+- name: Crear la base de datos para Zabbix
+  mysql_db:
+    name: zabbix
+    state: present
+    collation: utf8_general_ci
+    encoding: utf8
+    login_user: root
+  when: vm_type == "monitoring"
+  tags: 
+    - configure_zabbix
+
+- name: Crear un usuario para la base de datos Zabbix
+  mysql_user:
+    name: zabbix
+    password: 'Qwe123..'
+    host: '10.90.1.%'
+    priv: "zabbix.*:ALL"
+    state: present
+    login_user: root
+  when: vm_type == "monitoring"
+  tags:
+    - configure_zabbix

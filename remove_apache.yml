@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+  become: yes
+  tasks: 
+    - name: Detener el servicio Apache
+      service:
+        name: apache2
+        state: stopped
+
+    - name: Desinstalar apache y paquetes relacionados
+      apt: 
+        name: apache2
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Eliminar archivos de la configuración de Apache
+      file:
+        path: /etc/apache2
+        state: absent
