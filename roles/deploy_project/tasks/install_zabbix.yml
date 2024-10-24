@@ -5,18 +5,31 @@
     name: zabbix-server-mysql
     state: present
     update-cache: yes
-    
-- name: Iniciar y habilitar Zabbix
-  service:
-    name: zabbix-server
-    state: started
-    enabled: yes
-
-- name: Verificar estado de Zabbix
-  shell: systemctl status zabbix-server
-  register: zabbix_status
-  changed_when: False
+  notify:
+    - Enable Zabbix
+    - Start Zabbix
 
 - name: Mostrar estado de Zabbix
   debug:
     var: zabbix_status.stdout
+
+- name: Crear la base de datos para Zabbix
+  mysql_db:
+    name: zabbix
+    state: present
+    collation: utf8_general_ci
+    encoding: utf8
+    login_user: root
+  when: vm_type == "monitoring"
+
+- name: Crear un usuario para la base de datos Zabbix
+  mysql_user:
+    name: zabbix
+    password: 'Qwe123..'
+    host: '10.90.1.%'
+    priv: "zabbix.*:ALL"
+    state: present
+    login_user: root
+  when: vm_type == "monitoring"
+  tags:
+    - configure_zabbix

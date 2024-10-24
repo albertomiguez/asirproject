@@ -5,25 +5,9 @@
     name: apache2
     state: present
     update-cache: yes
-  tags:
-    - install_zabbix
-
-- name: Habilitar y arrancar Apache
-  systemd:
-    name: apache2
-    enabled: yes
-    state: started
-  tags:
-    - install_zabbix
-
-- name: Comprobar que el servicio Apache está activo
-  shell: systemctl status apache2
-  register: apache_status
-  changed_when: False
-
-- name: Mostrar estado de Apache
-  debug:
-    var: apache_status.stdout
+  notify:
+    - Enable Apache
+    - Start Apache
 
 - name: Habilitar mod_ssl
   command: a2enmod ssl
@@ -33,19 +17,23 @@
 
 - name: Copiar certificado SSL
   copy:
-    src: files/cloudflare.pem
-    dest: /etc/ssl/certs/cloudflare.pem
+    src: files/{{ domain_name }}.pem
+    dest: /etc/ssl/certs/{{ domain_name }}.pem
     owner: root
     group: root
     mode: 0644
+  when: vm_type == "webserver"
 
 - name: Copiar la clave privada a SSL
   copy:
-    src: files/cloudflare.key
-    dest: /etc/ssl/private/cloudflare.key
+    src: files/{{ domain_name }}.key
+    dest: /etc/ssl/private/{{ domain_name }}.key
     owner: root
     group: root
     mode: 0600
+  when: vm_type == "webserver"
+
+################### Cambiar el habilitar el sitio web por variables####################
 
 - name: Crear un archivo de configuración para sitio HTTPS
   template:
@@ -60,3 +48,17 @@
   notify: 
     - Restart Apache
   when: vm_type == "webserver"
+
+- name: Configuración para Zabbix
+  template:
+    src: zabbix_apache.conf.j2
+    dest: /etc/apache2/sites-available/zabbix.conf
+  notify:
+    - Restart Apache
+  when: vm_type == "monitoring"
+
+- name: Habilitar el sitio web por defecto en zabbix
+  command: a2ensite zabbix.conf
+  notify:
+    - Restart Apache
+  when: vm_type == "monitoring"

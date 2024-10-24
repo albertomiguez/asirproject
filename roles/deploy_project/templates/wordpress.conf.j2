@@ -3,8 +3,8 @@
     DocumentRoot /var/www/html/wordpress
 
     SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/cloudflare.pem
-    SSLCertificateKeyFile /etc/ssl/private/cloudflare.key
+    SSLCertificateFile /etc/ssl/certs/{{ domain_name }}.pem
+    SSLCertificateKeyFile /etc/ssl/private/{{ domain_name }}.key
 
     <Directory /var/www/html/wordpress>
         AllowOverride All

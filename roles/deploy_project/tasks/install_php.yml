@@ -17,11 +17,3 @@
     name: php7.4-fpm
     state: started
     enabled: yes
-
-- name: Verificar versión de PHP
-  shell: php -v
-  register: php_version
-
-- name: Mostrar versión de PHP
-  debug:
-    var: php_version.stdout

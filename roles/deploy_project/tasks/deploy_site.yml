@@ -1,9 +1,15 @@
 ---
 
+- name: Verificar versión de PHP
+  shell: php -v
+  register: php_version
+  when: vm_type == "webserver"
+  
 - name: Descargar y desplegar WordPress
   get_url:
     url: https://wordpress.org/latest.tar.gz
     dest: /tmp/wordpress.tar.gz
+  when: vm_type == "webserver"
 
 - name: Extraer WordPress
   unarchive:
@@ -11,6 +17,7 @@
     dest: /var/www/html
     remote_src: yes
     creates: /var/www/html/wordpress
+  when: vm_type == "webserver"
 
 - name: Ajustar permisos para WordPress
   file:
@@ -18,6 +25,7 @@
     owner: www-data
     group: www-data
     mode: '0755'
+  when: vm_type == "webserver"
 
 - name: Configurar archivo wp-config.php
   template:
@@ -26,11 +34,23 @@
     owner: www-data
     group: www-data
     mode: '0644'
+  when: vm_type == "webserver"
 
-- name: Instalar mysql-client
-  apt:
-    name: default-mysql-client
+- name: Crear la base de datos para WordPress
+  mysql_db:
+    name: wordpress_db
     state: present
-    update-cache: yes
-  tags:
-    - ola
+    collation: utf8_general_ci
+    encoding: utf8
+    login_user: root
+  when: vm_type == "db"
+
+- name: Crear un usuario para la base de datos
+  mysql_user:
+    name: wordpress
+    password: 'Abc123..'
+    host: '10.90.1.%'
+    priv: "wordpress_db.*:ALL"
+    state: present
+    login_user: root
+  when: vm_type == "db"

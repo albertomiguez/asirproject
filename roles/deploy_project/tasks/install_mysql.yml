@@ -5,21 +5,18 @@
     name: default-mysql-server
     state: present
     update-cache: yes
-  tags: 
-    - install_zabbix
 
 - name: Iniciar y habilitar MySQL
   service:
     name: mysql
     state: started
     enabled: yes
-  tags:
-    - install_zabbix
 
-- name: Comprobar estado de MySQL
-  shell: systemctl status mysql
-  register: mysql_status
-  changed_when: False
+- name: Instalar módulo de python
+  apt:
+    name: python3-mysqldb
+    state: present
+    update-cache: yes
 
 - name: Cambiar dirección IP en la que escucha MySQL
   lineinfile:
@@ -29,12 +26,6 @@
     state: present
   notify:
     - Restart MySQL
-
-- name: Instalar módulo de python
-  apt:
-    name: python3-mysqldb
-    state: present
-    update-cache: yes
 
 - name: Mostrar estado de MySQL
   debug:

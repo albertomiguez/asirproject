@@ -16,6 +16,11 @@
     name: apache2
     state: stopped
 
+- name: Enable Apache
+  systemd:
+    name: apache2
+    state: enabled
+
 - name: Restart MySQL
   systemd:
     name: mysql
@@ -30,3 +35,28 @@
   systemd:
     name: mysql
     state: stopped
+
+- name: Enable MySQL
+  systemd: 
+    name: mysql
+    enabled: yes
+
+- name: Restart Zabbix
+  systemd:
+    name: zabbix-server
+    state: restarted
+
+- name: Start Zabbix
+  systemd:
+    name: zabbix-server
+    state: started
+  
+- name: Stop Zabbix
+  systemd:
+    name: zabbix-server
+    state: stopped
+
+- name: Enable Zabbix
+  systemd:
+    name: zabbix-server
+    enabled: yes
