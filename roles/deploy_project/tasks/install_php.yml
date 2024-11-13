@@ -6,11 +6,13 @@
     state: present
     update_cache: yes
   loop:
-    - php
-    - php-mysql
+    - php7.4
+    - php-mysqli
     - libapache2-mod-php
     - php-cli
     - php-fpm
+  notify:
+    - Restart Apache2
 
 - name: Verificar que PHP-FPM esté activo
   service:

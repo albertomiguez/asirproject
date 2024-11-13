@@ -54,3 +54,28 @@
     state: present
     login_user: root
   when: vm_type == "db"
+
+- name: Download WP-CLI
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    dest: /usr/local/bin/wp
+    mode: '0755'
+  when: vm_type == "webserver"
+
+- name: Install WordPress site
+  command: >
+    wp core install
+    --url="{{ domain_name }}"
+    --title="{{ wp_site_title }}"
+    --admin_user="{{ wp_admin_user }}"
+    --admin_password="{{ wp_admin_password }}"
+    --admin_email="{{ wp_admin_email }}"
+    --path="{{ wordpress_path }}"
+    --allow-root
+  args:
+    chdir: "{{ wordpress_path }}"
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  register: wp_installation
+  ignore_errors: true
+  when: vm_type == "webserver"  

@@ -1,0 +1,20 @@
+---
+
+- name: Instalar el agente de Zabbix
+  apt:
+    name: zabbix-agent
+    state: present
+    update-cache: yes
+  notify:
+    - Enable Zabbix-Agent
+    - Start Zabbix-Agent
+
+- name: Configurar Zabbix Agent
+  template:
+    src: templates/zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart Zabbix-Agent

@@ -1,5 +1,5 @@
 ---
-# handlers file for Wordpress
+# handlers file
 
 - name: Restart Apache
   systemd:
@@ -16,11 +16,6 @@
     name: apache2
     state: stopped
 
-- name: Enable Apache
-  systemd:
-    name: apache2
-    state: enabled
-
 - name: Restart MySQL
   systemd:
     name: mysql
@@ -35,11 +30,6 @@
   systemd:
     name: mysql
     state: stopped
-
-- name: Enable MySQL
-  systemd: 
-    name: mysql
-    enabled: yes
 
 - name: Restart Zabbix
   systemd:
@@ -56,7 +46,17 @@
     name: zabbix-server
     state: stopped
 
-- name: Enable Zabbix
+- name: Restart Zabbix-Agent
   systemd:
-    name: zabbix-server
-    enabled: yes
+    name: zabbix-agent
+    state: restarted
+
+- name: Start Zabbix-Agent
+  systemd:
+    name: zabbix-agent
+    state: started
+  
+- name: Stop Zabbix-Agent
+  systemd:
+    name: zabbix-agent
+    state: stopped

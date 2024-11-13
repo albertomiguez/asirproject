@@ -6,7 +6,6 @@
     state: present
     update-cache: yes
   notify:
-    - Enable Apache
     - Start Apache
 
 - name: Habilitar mod_ssl

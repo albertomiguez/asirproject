@@ -19,12 +19,12 @@
     - install_apache
 
 - import_tasks: install_php.yml
-  when: vm_type == "webserver" or vm_type == "monitoring"
+  when: vm_type == "webserver"
   tags:
     - install_php
 
 - import_tasks: deploy_site.yml
-  when: vm_type == "webserver"
+  when: vm_type == "webserver" or vm_type == "db"
   tags:
     - deploy
 
@@ -33,4 +33,6 @@
   tags:
     - install_zabbix
 
-
+- import_tasks: install_zabbix-agent.yml
+  tags:
+    - install_agent

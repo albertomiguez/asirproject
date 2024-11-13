@@ -1,0 +1,11 @@
+# Configuracion general de Zabbix Agent
+PidFile=/var/run/zabbix/zabbix-agent.pid
+LogFile=/var/log/zabbix-agent/zabbix-agentd.log
+LogFileSize=0
+Server=10.90.1.4
+ServerActive=10.90.1.4
+Hostname={{ vm_name }}
+
+# Configuracion de conexiones y tiempos de espera
+StartAgents=3
+Timeout=30

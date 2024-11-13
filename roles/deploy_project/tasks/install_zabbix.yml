@@ -9,27 +9,58 @@
     - Enable Zabbix
     - Start Zabbix
 
-- name: Mostrar estado de Zabbix
-  debug:
-    var: zabbix_status.stdout
+- name: Instalar el Frontend de Zabbix
+  apt:
+    name: zabbix-frontend-php
+    state: present
+    update-cache: yes
+  notify:
+    - Restart Zabbix
+
+- name: Configurar PHP para Zabbix
+  blockinfile:
+    path: "/etc/php/7.4/apache2/php.ini"
+    marker: "; ANSIBLE MANAGED BLOCK FOR ZABBIX"
+    block: |
+      post_max_size = 16M
+      max_execution_time = 300 
+      max_input_time = 300
+      date.timezone = "Europe/Madrid"
+  notify:
+    - Restart Apache
 
 - name: Crear la base de datos para Zabbix
   mysql_db:
     name: zabbix
     state: present
-    collation: utf8_general_ci
+    collation: utf8_bin
     encoding: utf8
     login_user: root
-  when: vm_type == "monitoring"
 
 - name: Crear un usuario para la base de datos Zabbix
   mysql_user:
     name: zabbix
     password: 'Qwe123..'
-    host: '10.90.1.%'
+    host: 'localhost'
     priv: "zabbix.*:ALL"
     state: present
     login_user: root
-  when: vm_type == "monitoring"
-  tags:
-    - configure_zabbix
+
+# - name: Configurar zabbix_server
+#   ansible.builtin.lineinfile:
+#     path: /etc/zabbix/zabbix_server.conf
+#     regexp: '^DB(Host|Name|User|Password|Port)='
+#     line: "{{ item }}"
+#     create: yes
+#   loop:
+#     - "DBHost=localhost"
+#     - "DBName=zabbix"
+#     - "DBUser=zabbix"
+#     - "DBPassword=Qwe123.."
+#   notify:
+#     - Restart Zabbix
+
+- name: Importar esquema de base de datos para Zabbix
+  shell: "/bin/gunzip -c /usr/share/zabbix-server-mysql/*.sql.gz | mysql -u zabbix -pQwe123.. zabbix"
+  args:
+    executable: /bin/bash

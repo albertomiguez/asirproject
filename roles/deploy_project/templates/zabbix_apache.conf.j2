@@ -1,10 +1,10 @@
-<VirtualHost *:443>
+<VirtualHost *:80>
     ServerAdmin admin@yourdomain.com
-    DocumentRoot /usr/share/zabbix-server-mysql
+    DocumentRoot /usr/share/zabbix
 
-    Alias /zabbix /usr/share/zabbix-server-mysql
+    Alias /zabbix /usr/share/zabbix
 
-    <Directory "/usr/share/zabbix-server-mysql">
+    <Directory "/usr/share/zabbix">
         Options FollowSymLinks
         AllowOverride None
         Require all granted
