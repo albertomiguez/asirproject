@@ -1,5 +1,5 @@
 vm_name: up-webserver
-vm_ip: 5.22.216.172
+vm_ip: 5.22.216.70
 vm_type: webserver
 
 domain_name: asirproject.es

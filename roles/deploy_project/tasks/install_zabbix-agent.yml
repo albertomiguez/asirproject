@@ -6,7 +6,6 @@
     state: present
     update-cache: yes
   notify:
-    - Enable Zabbix-Agent
     - Start Zabbix-Agent
 
 - name: Configurar Zabbix Agent

@@ -6,7 +6,6 @@
     state: present
     update-cache: yes
   notify:
-    - Enable Zabbix
     - Start Zabbix
 
 - name: Instalar el Frontend de Zabbix
@@ -60,7 +59,7 @@
 #   notify:
 #     - Restart Zabbix
 
-- name: Importar esquema de base de datos para Zabbix
-  shell: "/bin/gunzip -c /usr/share/zabbix-server-mysql/*.sql.gz | mysql -u zabbix -pQwe123.. zabbix"
-  args:
-    executable: /bin/bash
+# - name: Importar esquema de base de datos para Zabbix
+#   shell: "/bin/gunzip -c /usr/share/zabbix-server-mysql/*.sql.gz | mysql -u zabbix -pQwe123.. zabbix"
+#   args:
+#     executable: /bin/bash

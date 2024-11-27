@@ -12,7 +12,7 @@
     - php-cli
     - php-fpm
   notify:
-    - Restart Apache2
+    - Restart Apache
 
 - name: Verificar que PHP-FPM esté activo
   service:

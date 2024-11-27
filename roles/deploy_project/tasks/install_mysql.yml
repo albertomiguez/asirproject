@@ -1,10 +1,31 @@
 ---
 
-- name: Instalar MySQL
+- name: Download MySQL APT configuration package 
+  copy:
+    src: files/mysql-apt-config_0.8.30-1_all.deb
+    dest: /tmp/mysql-apt-config.deb
+  become: yes
+
+- name: Install GnuPG (for package verification)
   apt:
-    name: default-mysql-server
+    name: gnupg
     state: present
-    update-cache: yes
+
+- name: Install MySQL APT configuration package
+  command: dpkg -i /tmp/mysql-apt-config.deb
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  become: yes
+
+- name: Update APT cache
+  apt:
+    update_cache: yes
+  become: yes
+  
+- name: Install MySQL Server
+  apt:
+    name: mysql-server
+    state: present
 
 - name: Iniciar y habilitar MySQL
   service:
@@ -18,11 +39,15 @@
     state: present
     update-cache: yes
 
-- name: Cambiar dirección IP en la que escucha MySQL
-  lineinfile:
-    path: /etc/mysql/mariadb.conf.d/50-server.cnf
-    regexp: '^bind-address'
-    line: "bind-address = 0.0.0.0"
+- name: Cargar módulo necesario
+  blockinfile:
+    path: /etc/mysql/mariadb.cnf
+    block: |
+      [mysqld]
+      mysql_native_password=ON
     state: present
-  notify:
-    - Restart MySQL
+
+- name: Reiniciar servicio
+  service:
+    name: mysql
+    state: restarted

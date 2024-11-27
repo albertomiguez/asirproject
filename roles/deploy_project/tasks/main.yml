@@ -19,7 +19,7 @@
     - install_apache
 
 - import_tasks: install_php.yml
-  when: vm_type == "webserver"
+  when: vm_type == "webserver" or vm_type == "monitoring"
   tags:
     - install_php
 
