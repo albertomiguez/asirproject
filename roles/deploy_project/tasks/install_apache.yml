@@ -12,7 +12,6 @@
   command: a2enmod ssl
   notify:
     - Restart Apache
-  when: vm_type == "webserver"
 
 - name: Copiar certificado SSL
   copy:
@@ -32,21 +31,21 @@
     mode: 0600
   when: vm_type == "webserver"
 
-################### Cambiar el habilitar el sitio web por variables####################
-
 - name: Crear un archivo de configuración para sitio HTTPS
   template:
     src: wordpress.conf.j2
-    dest: /etc/apache2/sites-available/000-default.conf
+    dest: /etc/apache2/sites-available/{{ domain_name }}.conf
   notify:
     - Restart Apache
   when: vm_type == "webserver"
 
 - name: Habilitar el sitio web por defecto
-  command: a2ensite 000-default.conf
-  notify: 
+  command: a2ensite "{{ domain_name }}"
+  notify:
     - Restart Apache
   when: vm_type == "webserver"
+
+  #Zabbix
 
 - name: Configuración para Zabbix
   template:
@@ -56,8 +55,26 @@
     - Restart Apache
   when: vm_type == "monitoring"
 
+- name: Copiar certificado SSL en Zabbix
+  copy:
+    src: files/monitoring.{{ domain_name }}.pem
+    dest: /etc/ssl/certs/monitorin.{{ domain_name }}.pem
+    owner: root
+    group: root
+    mode: 0644
+  when: vm_type == "monitoring"
+
+- name: Copiar la clave privada a SSL e Zabbix
+  copy:
+    src: files/monitoring.{{ domain_name }}.key
+    dest: /etc/ssl/private/monitoring.{{ domain_name }}.key
+    owner: root
+    group: root
+    mode: 0600
+  when: vm_type == "monitoring"
+
 - name: Habilitar el sitio web por defecto en zabbix
-  command: a2ensite zabbix.conf
+  command: a2ensite zabbix
   notify:
     - Restart Apache
   when: vm_type == "monitoring"

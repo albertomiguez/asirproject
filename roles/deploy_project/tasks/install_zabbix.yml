@@ -2,19 +2,15 @@
 
 - name: Instalar el repositorio de Zabbix
   apt:
-    name: zabbix-server-mysql
+    name: 
+      - zabbix-server-mysql
+      - zabbix-frontend-php
+      - zabbix-apache-conf
     state: present
     update-cache: yes
   notify:
     - Start Zabbix
-
-- name: Instalar el Frontend de Zabbix
-  apt:
-    name: zabbix-frontend-php
-    state: present
-    update-cache: yes
-  notify:
-    - Restart Zabbix
+    - Restart Apache
 
 - name: Configurar PHP para Zabbix
   blockinfile:
@@ -30,7 +26,7 @@
 
 - name: Crear la base de datos para Zabbix
   mysql_db:
-    name: zabbix
+    name: "{{ zabbix_db_name }}"
     state: present
     collation: utf8_bin
     encoding: utf8
@@ -38,28 +34,28 @@
 
 - name: Crear un usuario para la base de datos Zabbix
   mysql_user:
-    name: zabbix
-    password: 'Qwe123..'
-    host: 'localhost'
-    priv: "zabbix.*:ALL"
+    name: "{{ zabbix_db_user }}"
+    password: "{{ zabbix_db_password }}"
+    host: "{{ zabbix_db_host }}"
+    priv: "'{{ zabbix_db_name }}'.*:ALL"
     state: present
     login_user: root
 
-# - name: Configurar zabbix_server
-#   ansible.builtin.lineinfile:
-#     path: /etc/zabbix/zabbix_server.conf
-#     regexp: '^DB(Host|Name|User|Password|Port)='
-#     line: "{{ item }}"
-#     create: yes
-#   loop:
-#     - "DBHost=localhost"
-#     - "DBName=zabbix"
-#     - "DBUser=zabbix"
-#     - "DBPassword=Qwe123.."
-#   notify:
-#     - Restart Zabbix
+- name: Configurar zabbix_server
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: '^DB(Host|Name|User|Password|Port)='
+    line: "{{ item }}"
+    create: yes
+  loop:
+    - "DBHost=l{{ zabbix_db_host }}"
+    - "DBName={{ zabbix_db_name }}"
+    - "DBUser={{ zabbix_db_user }}"
+    - "DBPassword={{zabbix_db_password}}"
+  notify:
+    - Restart Zabbix
 
-# - name: Importar esquema de base de datos para Zabbix
-#   shell: "/bin/gunzip -c /usr/share/zabbix-server-mysql/*.sql.gz | mysql -u zabbix -pQwe123.. zabbix"
-#   args:
-#     executable: /bin/bash
+- name: Importar esquema de base de datos para Zabbix
+  shell: "/bin/gunzip -c /usr/share/zabbix-server-mysql/*.sql.gz | mysql -u zabbix -pQwe123.. zabbix"
+  args:
+    executable: /bin/bash

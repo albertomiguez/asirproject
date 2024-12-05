@@ -9,22 +9,22 @@
 
 
 - import_tasks: install_mysql.yml
-  when: vm_type == "db" or vm_type == "monitoring"
+  when: vm_type in ["db", "monitoring"]
   tags:
     - install_mysql
 
 - import_tasks: install_apache.yml
-  when: vm_type  == "webserver" or vm_type == "monitoring"
+  when: vm_type in ["webserver", "monitoring"]
   tags:
     - install_apache
 
 - import_tasks: install_php.yml
-  when: vm_type == "webserver" or vm_type == "monitoring"
+  when: vm_type in ["webserver", "monitoring"]
   tags:
     - install_php
 
 - import_tasks: deploy_site.yml
-  when: vm_type == "webserver" or vm_type == "db"
+  when: vm_type in ["webserver", "db"]
   tags:
     - deploy
 

@@ -6,11 +6,11 @@
     state: present
     update_cache: yes
   loop:
-    - php7.4
-    - php-mysqli
-    - libapache2-mod-php
-    - php-cli
-    - php-fpm
+    - php{{php_version}}
+    - php{{php_version}}-mysqli
+    - libapache2-mod-php{{php_version}}
+    - php{{php_version}}-cli
+    - php{{php_version}}-fpm
   notify:
     - Restart Apache
 

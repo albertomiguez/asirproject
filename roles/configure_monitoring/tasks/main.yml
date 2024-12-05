@@ -1,8 +1,0 @@
----
-# tasks file for wordpress
-
-
-- import_tasks: configure_monitoring_client.yml
-
-
-
